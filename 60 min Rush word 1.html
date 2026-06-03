@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>MARN Word Rush 60 Mobile Fixed</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;min-height:100vh;font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#120f2d,#1e1b4b 45%,#0f766e);
+  color:#0f172a;
+}
+.app{width:100%;max-width:480px;margin:auto;padding:14px 14px 32px}
+.hero{color:white;text-align:center;padding:16px 8px 8px}
+.logo{font-size:48px}
+h1{font-size:30px;margin:6px 0 2px}
+.hero p{margin:0;color:rgba(255,255,255,.82);font-size:14px}
+.card{
+  background:rgba(255,255,255,.97);border-radius:28px;padding:18px;margin:14px 0;
+  box-shadow:0 22px 55px rgba(0,0,0,.25);
+}
+.badge{display:inline-block;background:#ede9fe;color:#5b21b6;padding:7px 12px;border-radius:999px;font-weight:800;font-size:12px}
+label{display:block;margin:12px 0 7px;font-size:13px;color:#475569;font-weight:800}
+input,select{
+  width:100%;border:2px solid #e2e8f0;border-radius:18px;padding:15px;font-size:16px;background:white;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{
+  border:0;border-radius:18px;padding:15px 14px;font-weight:900;font-size:15px;
+  background:#e2e8f0;color:#0f172a;touch-action:manipulation;cursor:pointer;
+}
+button:active{transform:scale(.98)}
+.primary{background:linear-gradient(135deg,#7c3aed,#2563eb);color:white}
+.green{background:linear-gradient(135deg,#22c55e,#16a34a);color:white}
+.red{background:#fee2e2;color:#991b1b}
+.statbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin:12px 0}
+.stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:11px 7px;text-align:center;color:#475569;font-size:12px;font-weight:800}
+.stat b{display:block;font-size:22px;color:#0f172a;margin-top:3px}
+.progress{height:16px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.bar{height:100%;width:100%;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transition:.25s width}
+.question{text-align:center;padding:18px 12px;border-radius:24px;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #c7d2fe;margin:12px 0}
+.word{font-size:42px;line-height:1.1;font-weight:900;margin:12px 0;color:#111827;word-break:break-word}
+.py{font-size:16px;color:#475569}
+.options{display:grid;gap:9px}
+.option{width:100%;background:white;text-align:left;border:2px solid #e2e8f0;font-size:16px;min-height:52px}
+.option.correct{background:#dcfce7;border-color:#22c55e;color:#14532d}
+.option.wrong{background:#fee2e2;border-color:#ef4444;color:#7f1d1d}
+.resultBig{font-size:56px;font-weight:900;color:#16a34a;margin:8px 0}
+.small{font-size:13px;color:#64748b}
+.hidden{display:none!important}
+.footer{text-align:center;color:rgba(255,255,255,.7);font-size:12px;margin-top:10px}
+.reviewItem{padding:11px 0;border-bottom:1px solid #e2e8f0;font-size:14px}
+.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:800}
+.topScore{background:#fffbeb;border:1px solid #fde68a;border-radius:18px;padding:12px;margin:12px 0;color:#78350f;text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="logo">⚡</div>
+    <h1>MARN Word Rush 60</h1>
+    <p>แข่งจับเวลา 60 วินาที ตอบให้ได้มากที่สุด</p>
+  </div>
+
+  <section id="home" class="card">
+    <span class="badge">Mobile Fixed Version</span>
+    <h2 style="margin:10px 0 4px">พร้อมลุยคำศัพท์หรือยัง?</h2>
+    <p class="small">เวอร์ชันนี้แก้ปุ่มมือถือโดยไม่ใช้ inline onclick</p>
+
+    <label>ชื่อผู้เล่น</label>
+    <input id="player" placeholder="เช่น IFAN / MARN" autocomplete="off">
+
+    <label>เลือกภาษาเกม</label>
+    <div class="grid">
+      <button id="btnEn" type="button" class="primary">🇬🇧 English</button>
+      <button id="btnZh" type="button">🇨🇳 中文 Beginner</button>
+    </div>
+
+    <label>รูปแบบคำถาม</label>
+    <select id="direction">
+      <option value="toThai">แสดงคำศัพท์ → เลือกความหมายไทย</option>
+      <option value="fromThai">แสดงภาษาไทย → เลือกคำศัพท์</option>
+    </select>
+
+    <div class="topScore">🏆 สถิติสูงสุด: <b id="bestScore">0</b> คำ ใน 60 วินาที</div>
+    <button id="startBtn" type="button" class="green" style="width:100%;font-size:18px;margin-top:4px">เริ่มเกม 60 วินาที</button>
+  </section>
+
+  <section id="game" class="card hidden">
+    <div class="statbar">
+      <div class="stat">⏱️ เวลา<b id="time">60</b></div>
+      <div class="stat">✅ ถูก<b id="score">0</b></div>
+      <div class="stat">🔥 Combo<b id="combo">0</b></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;color:#475569;font-weight:800;margin:4px 0 7px">
+      <span>เหลือเวลา</span><span id="percentText">100%</span>
+    </div>
+    <div class="progress"><div id="timeBar" class="bar"></div></div>
+
+    <div class="question">
+      <div id="modeLine" class="small" style="font-weight:800">เลือกความหมายที่ถูกต้อง</div>
+      <div id="questionWord" class="word">Apple</div>
+      <div id="pinyin" class="py"></div>
+    </div>
+
+    <div id="options" class="options"></div>
+    <button id="speakBtn" type="button" style="width:100%;margin-top:12px">🔊 ฟังเสียง</button>
+    <button id="finishBtn" type="button" class="red" style="width:100%;margin-top:10px">จบรอบ</button>
+  </section>
+
+  <section id="result" class="card hidden">
+    <span class="badge">สรุปผลการแข่งขัน</span>
+    <h2>หมดเวลาแล้ว 🎉</h2>
+    <div class="resultBig"><span id="finalScore">0</span> คำ</div>
+    <p id="resultText" style="font-weight:800"></p>
+    <div class="statbar">
+      <div class="stat">เล่นทั้งหมด<b id="attempts">0</b></div>
+      <div class="stat">ผิด<b id="wrong">0</b></div>
+      <div class="stat">แม่นยำ<b id="accuracy">0%</b></div>
+    </div>
+    <div id="newRecord" class="topScore hidden">🏆 สถิติใหม่! เก่งมาก</div>
+    <h3>คำที่เจอในรอบนี้</h3>
+    <div id="review"></div>
+    <button id="againBtn" type="button" class="green" style="width:100%;margin-top:14px">เล่นอีกครั้ง</button>
+    <button id="homeBtn" type="button" style="width:100%;margin-top:10px">กลับหน้าแรก</button>
+  </section>
+
+  <div class="footer">Created by MARN · Word Rush for English & Beginner Chinese</div>
+</div>
+
+<script>
+const VOCAB = [{"en":"apple","zh":"苹果","py":"píngguǒ","th":"แอปเปิล"},{"en":"banana","zh":"香蕉","py":"xiāngjiāo","th":"กล้วย"},{"en":"orange","zh":"橙子","py":"chéngzi","th":"ส้ม"},{"en":"grape","zh":"葡萄","py":"pútáo","th":"องุ่น"},{"en":"watermelon","zh":"西瓜","py":"xīguā","th":"แตงโม"},{"en":"rice","zh":"米饭","py":"mǐfàn","th":"ข้าว"},{"en":"noodle","zh":"面条","py":"miàntiáo","th":"บะหมี่"},{"en":"bread","zh":"面包","py":"miànbāo","th":"ขนมปัง"},{"en":"milk","zh":"牛奶","py":"niúnǎi","th":"นม"},{"en":"water","zh":"水","py":"shuǐ","th":"น้ำ"},{"en":"tea","zh":"茶","py":"chá","th":"ชา"},{"en":"coffee","zh":"咖啡","py":"kāfēi","th":"กาแฟ"},{"en":"egg","zh":"鸡蛋","py":"jīdàn","th":"ไข่"},{"en":"fish","zh":"鱼","py":"yú","th":"ปลา"},{"en":"chicken","zh":"鸡肉","py":"jīròu","th":"ไก่"},{"en":"beef","zh":"牛肉","py":"niúròu","th":"เนื้อวัว"},{"en":"soup","zh":"汤","py":"tāng","th":"ซุป"},{"en":"salt","zh":"盐","py":"yán","th":"เกลือ"},{"en":"sugar","zh":"糖","py":"táng","th":"น้ำตาล"},{"en":"fruit","zh":"水果","py":"shuǐguǒ","th":"ผลไม้"},{"en":"vegetable","zh":"蔬菜","py":"shūcài","th":"ผัก"},{"en":"carrot","zh":"胡萝卜","py":"húluóbo","th":"แครอท"},{"en":"potato","zh":"土豆","py":"tǔdòu","th":"มันฝรั่ง"},{"en":"tomato","zh":"西红柿","py":"xīhóngshì","th":"มะเขือเทศ"},{"en":"onion","zh":"洋葱","py":"yángcōng","th":"หัวหอม"},{"en":"dog","zh":"狗","py":"gǒu","th":"สุนัข"},{"en":"cat","zh":"猫","py":"māo","th":"แมว"},{"en":"bird","zh":"鸟","py":"niǎo","th":"นก"},{"en":"fish animal","zh":"鱼","py":"yú","th":"ปลา"},{"en":"rabbit","zh":"兔子","py":"tùzi","th":"กระต่าย"},{"en":"horse","zh":"马","py":"mǎ","th":"ม้า"},{"en":"cow","zh":"牛","py":"niú","th":"วัว"},{"en":"pig","zh":"猪","py":"zhū","th":"หมู"},{"en":"duck","zh":"鸭子","py":"yāzi","th":"เป็ด"},{"en":"chicken animal","zh":"鸡","py":"jī","th":"ไก่"},{"en":"elephant","zh":"大象","py":"dàxiàng","th":"ช้าง"},{"en":"tiger","zh":"老虎","py":"lǎohǔ","th":"เสือ"},{"en":"lion","zh":"狮子","py":"shīzi","th":"สิงโต"},{"en":"monkey","zh":"猴子","py":"hóuzi","th":"ลิง"},{"en":"snake","zh":"蛇","py":"shé","th":"งู"},{"en":"ant","zh":"蚂蚁","py":"mǎyǐ","th":"มด"},{"en":"bee","zh":"蜜蜂","py":"mìfēng","th":"ผึ้ง"},{"en":"butterfly","zh":"蝴蝶","py":"húdié","th":"ผีเสื้อ"},{"en":"spider","zh":"蜘蛛","py":"zhīzhū","th":"แมงมุม"},{"en":"frog","zh":"青蛙","py":"qīngwā","th":"กบ"},{"en":"red","zh":"红色","py":"hóngsè","th":"สีแดง"},{"en":"blue","zh":"蓝色","py":"lánsè","th":"สีน้ำเงิน"},{"en":"green","zh":"绿色","py":"lǜsè","th":"สีเขียว"},{"en":"yellow","zh":"黄色","py":"huángsè","th":"สีเหลือง"},{"en":"black","zh":"黑色","py":"hēisè","th":"สีดำ"},{"en":"white","zh":"白色","py":"báisè","th":"สีขาว"},{"en":"pink","zh":"粉色","py":"fěnsè","th":"สีชมพู"},{"en":"purple","zh":"紫色","py":"zǐsè","th":"สีม่วง"},{"en":"brown","zh":"棕色","py":"zōngsè","th":"สีน้ำตาล"},{"en":"gray","zh":"灰色","py":"huīsè","th":"สีเทา"},{"en":"one","zh":"一","py":"yī","th":"หนึ่ง"},{"en":"two","zh":"二","py":"èr","th":"สอง"},{"en":"three","zh":"三","py":"sān","th":"สาม"},{"en":"four","zh":"四","py":"sì","th":"สี่"},{"en":"five","zh":"五","py":"wǔ","th":"ห้า"},{"en":"six","zh":"六","py":"liù","th":"หก"},{"en":"seven","zh":"七","py":"qī","th":"เจ็ด"},{"en":"eight","zh":"八","py":"bā","th":"แปด"},{"en":"nine","zh":"九","py":"jiǔ","th":"เก้า"},{"en":"ten","zh":"十","py":"shí","th":"สิบ"},{"en":"eleven","zh":"十一","py":"shíyī","th":"สิบเอ็ด"},{"en":"twelve","zh":"十二","py":"shíèr","th":"สิบสอง"},{"en":"twenty","zh":"二十","py":"èrshí","th":"ยี่สิบ"},{"en":"hundred","zh":"百","py":"bǎi","th":"ร้อย"},{"en":"thousand","zh":"千","py":"qiān","th":"พัน"},{"en":"father","zh":"爸爸","py":"bàba","th":"พ่อ"},{"en":"mother","zh":"妈妈","py":"māma","th":"แม่"},{"en":"older brother","zh":"哥哥","py":"gēge","th":"พี่ชาย"},{"en":"younger brother","zh":"弟弟","py":"dìdi","th":"น้องชาย"},{"en":"older sister","zh":"姐姐","py":"jiějie","th":"พี่สาว"},{"en":"younger sister","zh":"妹妹","py":"mèimei","th":"น้องสาว"},{"en":"grandfather","zh":"爷爷","py":"yéye","th":"ปู่/ตา"},{"en":"grandmother","zh":"奶奶","py":"nǎinai","th":"ย่า/ยาย"},{"en":"family","zh":"家庭","py":"jiātíng","th":"ครอบครัว"},{"en":"friend","zh":"朋友","py":"péngyou","th":"เพื่อน"},{"en":"teacher","zh":"老师","py":"lǎoshī","th":"ครู"},{"en":"student","zh":"学生","py":"xuésheng","th":"นักเรียน"},{"en":"school","zh":"学校","py":"xuéxiào","th":"โรงเรียน"},{"en":"book","zh":"书","py":"shū","th":"หนังสือ"},{"en":"pen","zh":"笔","py":"bǐ","th":"ปากกา"},{"en":"pencil","zh":"铅笔","py":"qiānbǐ","th":"ดินสอ"},{"en":"paper","zh":"纸","py":"zhǐ","th":"กระดาษ"},{"en":"desk","zh":"桌子","py":"zhuōzi","th":"โต๊ะ"},{"en":"chair","zh":"椅子","py":"yǐzi","th":"เก้าอี้"},{"en":"bag","zh":"书包","py":"shūbāo","th":"กระเป๋า"},{"en":"homework","zh":"作业","py":"zuòyè","th":"การบ้าน"},{"en":"exam","zh":"考试","py":"kǎoshì","th":"การสอบ"},{"en":"lesson","zh":"课","py":"kè","th":"บทเรียน"},{"en":"classroom","zh":"教室","py":"jiàoshì","th":"ห้องเรียน"},{"en":"question","zh":"问题","py":"wèntí","th":"คำถาม"},{"en":"answer","zh":"答案","py":"dá'àn","th":"คำตอบ"},{"en":"computer","zh":"电脑","py":"diànnǎo","th":"คอมพิวเตอร์"},{"en":"phone","zh":"手机","py":"shǒujī","th":"โทรศัพท์"},{"en":"internet","zh":"互联网","py":"hùliánwǎng","th":"อินเทอร์เน็ต"},{"en":"game","zh":"游戏","py":"yóuxì","th":"เกม"},{"en":"music","zh":"音乐","py":"yīnyuè","th":"เพลง"},{"en":"movie","zh":"电影","py":"diànyǐng","th":"ภาพยนตร์"},{"en":"photo","zh":"照片","py":"zhàopiàn","th":"รูปถ่าย"},{"en":"camera","zh":"相机","py":"xiàngjī","th":"กล้อง"},{"en":"video","zh":"视频","py":"shìpín","th":"วิดีโอ"},{"en":"house","zh":"房子","py":"fángzi","th":"บ้าน"},{"en":"room","zh":"房间","py":"fángjiān","th":"ห้อง"},{"en":"door","zh":"门","py":"mén","th":"ประตู"},{"en":"window","zh":"窗户","py":"chuānghu","th":"หน้าต่าง"},{"en":"bed","zh":"床","py":"chuáng","th":"เตียง"},{"en":"kitchen","zh":"厨房","py":"chúfáng","th":"ห้องครัว"},{"en":"bathroom","zh":"浴室","py":"yùshì","th":"ห้องน้ำ"},{"en":"toilet","zh":"厕所","py":"cèsuǒ","th":"ห้องส้วม"},{"en":"lamp","zh":"灯","py":"dēng","th":"โคมไฟ"},{"en":"clock","zh":"钟","py":"zhōng","th":"นาฬิกา"},{"en":"car","zh":"汽车","py":"qìchē","th":"รถยนต์"},{"en":"bus","zh":"公共汽车","py":"gōnggòng qìchē","th":"รถบัส"},{"en":"train","zh":"火车","py":"huǒchē","th":"รถไฟ"},{"en":"airplane","zh":"飞机","py":"fēijī","th":"เครื่องบิน"},{"en":"boat","zh":"船","py":"chuán","th":"เรือ"},{"en":"bicycle","zh":"自行车","py":"zìxíngchē","th":"จักรยาน"},{"en":"taxi","zh":"出租车","py":"chūzūchē","th":"แท็กซี่"},{"en":"road","zh":"路","py":"lù","th":"ถนน"},{"en":"station","zh":"车站","py":"chēzhàn","th":"สถานี"},{"en":"airport","zh":"机场","py":"jīchǎng","th":"สนามบิน"},{"en":"city","zh":"城市","py":"chéngshì","th":"เมือง"},{"en":"country","zh":"国家","py":"guójiā","th":"ประเทศ"},{"en":"Thailand","zh":"泰国","py":"tàiguó","th":"ประเทศไทย"},{"en":"China","zh":"中国","py":"zhōngguó","th":"ประเทศจีน"},{"en":"England","zh":"英国","py":"yīngguó","th":"อังกฤษ"},{"en":"market","zh":"市场","py":"shìchǎng","th":"ตลาด"},{"en":"shop","zh":"商店","py":"shāngdiàn","th":"ร้านค้า"},{"en":"restaurant","zh":"餐厅","py":"cāntīng","th":"ร้านอาหาร"},{"en":"hotel","zh":"酒店","py":"jiǔdiàn","th":"โรงแรม"},{"en":"hospital","zh":"医院","py":"yīyuàn","th":"โรงพยาบาล"},{"en":"bank","zh":"银行","py":"yínháng","th":"ธนาคาร"},{"en":"money","zh":"钱","py":"qián","th":"เงิน"},{"en":"price","zh":"价格","py":"jiàgé","th":"ราคา"},{"en":"buy","zh":"买","py":"mǎi","th":"ซื้อ"},{"en":"sell","zh":"卖","py":"mài","th":"ขาย"},{"en":"cheap","zh":"便宜","py":"piányi","th":"ถูก"},{"en":"expensive","zh":"贵","py":"guì","th":"แพง"},{"en":"work","zh":"工作","py":"gōngzuò","th":"ทำงาน"},{"en":"job","zh":"工作","py":"gōngzuò","th":"งาน"},{"en":"office","zh":"办公室","py":"bàngōngshì","th":"สำนักงาน"},{"en":"boss","zh":"老板","py":"lǎobǎn","th":"เจ้านาย"},{"en":"customer","zh":"顾客","py":"gùkè","th":"ลูกค้า"},{"en":"business","zh":"商业","py":"shāngyè","th":"ธุรกิจ"},{"en":"profit","zh":"利润","py":"lìrùn","th":"กำไร"},{"en":"plan","zh":"计划","py":"jìhuà","th":"แผน"},{"en":"day","zh":"天","py":"tiān","th":"วัน"},{"en":"week","zh":"星期","py":"xīngqī","th":"สัปดาห์"},{"en":"month","zh":"月","py":"yuè","th":"เดือน"},{"en":"year","zh":"年","py":"nián","th":"ปี"},{"en":"today","zh":"今天","py":"jīntiān","th":"วันนี้"},{"en":"tomorrow","zh":"明天","py":"míngtiān","th":"พรุ่งนี้"},{"en":"yesterday","zh":"昨天","py":"zuótiān","th":"เมื่อวาน"},{"en":"morning","zh":"早上","py":"zǎoshang","th":"ตอนเช้า"},{"en":"afternoon","zh":"下午","py":"xiàwǔ","th":"ตอนบ่าย"},{"en":"night","zh":"晚上","py":"wǎnshang","th":"ตอนกลางคืน"},{"en":"sun","zh":"太阳","py":"tàiyáng","th":"พระอาทิตย์"},{"en":"moon","zh":"月亮","py":"yuèliang","th":"พระจันทร์"},{"en":"star","zh":"星星","py":"xīngxing","th":"ดาว"},{"en":"rain","zh":"雨","py":"yǔ","th":"ฝน"},{"en":"wind","zh":"风","py":"fēng","th":"ลม"},{"en":"hot","zh":"热","py":"rè","th":"ร้อน"},{"en":"cold","zh":"冷","py":"lěng","th":"หนาว"},{"en":"happy","zh":"高兴","py":"gāoxìng","th":"มีความสุข"},{"en":"sad","zh":"难过","py":"nánguò","th":"เศร้า"},{"en":"angry","zh":"生气","py":"shēngqì","th":"โกรธ"},{"en":"tired","zh":"累","py":"lèi","th":"เหนื่อย"},{"en":"hungry","zh":"饿","py":"è","th":"หิว"},{"en":"thirsty","zh":"渴","py":"kě","th":"กระหายน้ำ"},{"en":"big","zh":"大","py":"dà","th":"ใหญ่"},{"en":"small","zh":"小","py":"xiǎo","th":"เล็ก"},{"en":"long","zh":"长","py":"cháng","th":"ยาว"},{"en":"short","zh":"短","py":"duǎn","th":"สั้น"},{"en":"new","zh":"新","py":"xīn","th":"ใหม่"},{"en":"old","zh":"旧","py":"jiù","th":"เก่า"},{"en":"good","zh":"好","py":"hǎo","th":"ดี"},{"en":"bad","zh":"坏","py":"huài","th":"แย่"},{"en":"fast","zh":"快","py":"kuài","th":"เร็ว"},{"en":"slow","zh":"慢","py":"màn","th":"ช้า"},{"en":"easy","zh":"容易","py":"róngyì","th":"ง่าย"},{"en":"difficult","zh":"难","py":"nán","th":"ยาก"},{"en":"open","zh":"开","py":"kāi","th":"เปิด"},{"en":"close","zh":"关","py":"guān","th":"ปิด"},{"en":"go","zh":"去","py":"qù","th":"ไป"},{"en":"come","zh":"来","py":"lái","th":"มา"},{"en":"eat","zh":"吃","py":"chī","th":"กิน"},{"en":"drink","zh":"喝","py":"hē","th":"ดื่ม"},{"en":"read","zh":"读","py":"dú","th":"อ่าน"},{"en":"write","zh":"写","py":"xiě","th":"เขียน"},{"en":"listen","zh":"听","py":"tīng","th":"ฟัง"},{"en":"speak","zh":"说","py":"shuō","th":"พูด"},{"en":"look","zh":"看","py":"kàn","th":"ดู"},{"en":"walk","zh":"走","py":"zǒu","th":"เดิน"},{"en":"run","zh":"跑","py":"pǎo","th":"วิ่ง"},{"en":"sleep","zh":"睡觉","py":"shuìjiào","th":"นอน"},{"en":"study","zh":"学习","py":"xuéxí","th":"เรียน"},{"en":"love","zh":"爱","py":"ài","th":"รัก"},{"en":"like","zh":"喜欢","py":"xǐhuān","th":"ชอบ"},{"en":"want","zh":"想要","py":"xiǎng yào","th":"ต้องการ"},{"en":"need","zh":"需要","py":"xūyào","th":"จำเป็นต้อง"},{"en":"help","zh":"帮助","py":"bāngzhù","th":"ช่วยเหลือ"},{"en":"start","zh":"开始","py":"kāishǐ","th":"เริ่ม"},{"en":"finish","zh":"完成","py":"wánchéng","th":"เสร็จสิ้น"},{"en":"win","zh":"赢","py":"yíng","th":"ชนะ"},{"en":"lose","zh":"输","py":"shū","th":"แพ้"},{"en":"try","zh":"尝试","py":"chángshì","th":"ลอง"},{"en":"learn","zh":"学习","py":"xuéxí","th":"เรียนรู้"},{"en":"remember","zh":"记得","py":"jìde","th":"จำได้"},{"en":"forget","zh":"忘记","py":"wàngjì","th":"ลืม"},{"en":"think","zh":"想","py":"xiǎng","th":"คิด"},{"en":"know","zh":"知道","py":"zhīdào","th":"รู้"},{"en":"understand","zh":"明白","py":"míngbai","th":"เข้าใจ"},{"en":"ask","zh":"问","py":"wèn","th":"ถาม"},{"en":"answer verb","zh":"回答","py":"huídá","th":"ตอบ"},{"en":"choose","zh":"选择","py":"xuǎnzé","th":"เลือก"},{"en":"change","zh":"改变","py":"gǎibiàn","th":"เปลี่ยน"},{"en":"ability","zh":"能力","py":"nénglì","th":"ความสามารถ"},{"en":"able","zh":"能","py":"néng","th":"สามารถ"},{"en":"about","zh":"关于","py":"guānyú","th":"เกี่ยวกับ"},{"en":"above","zh":"上面","py":"shàngmiàn","th":"ด้านบน"},{"en":"accept","zh":"接受","py":"jiēshòu","th":"ยอมรับ"},{"en":"accident","zh":"事故","py":"shìgù","th":"อุบัติเหตุ"},{"en":"action","zh":"行动","py":"xíngdòng","th":"การกระทำ"},{"en":"activity","zh":"活动","py":"huódòng","th":"กิจกรรม"},{"en":"actor","zh":"演员","py":"yǎnyuán","th":"นักแสดง"},{"en":"address","zh":"地址","py":"dìzhǐ","th":"ที่อยู่"},{"en":"adult","zh":"成人","py":"chéngrén","th":"ผู้ใหญ่"},{"en":"advice","zh":"建议","py":"jiànyì","th":"คำแนะนำ"},{"en":"after","zh":"以后","py":"yǐhòu","th":"หลังจาก"},{"en":"again","zh":"再","py":"zài","th":"อีกครั้ง"},{"en":"age","zh":"年龄","py":"niánlíng","th":"อายุ"},{"en":"air","zh":"空气","py":"kōngqì","th":"อากาศ"},{"en":"almost","zh":"几乎","py":"jīhū","th":"เกือบ"},{"en":"alone","zh":"独自","py":"dúzì","th":"คนเดียว"},{"en":"along","zh":"沿着","py":"yánzhe","th":"ตาม"},{"en":"already","zh":"已经","py":"yǐjīng","th":"แล้ว"},{"en":"also","zh":"也","py":"yě","th":"ด้วย"},{"en":"always","zh":"总是","py":"zǒngshì","th":"เสมอ"},{"en":"amazing","zh":"惊人","py":"jīngrén","th":"น่าทึ่ง"},{"en":"animal","zh":"词语","py":"cíyǔ","th":"animal"},{"en":"another","zh":"另一个","py":"lìng yí gè","th":"อีกอัน"},{"en":"anyone","zh":"任何人","py":"rènhé rén","th":"ใครก็ได้"},{"en":"anything","zh":"任何事","py":"rènhé shì","th":"อะไรก็ได้"},{"en":"area","zh":"地区","py":"dìqū","th":"พื้นที่"},{"en":"arrive","zh":"到达","py":"dàodá","th":"มาถึง"},{"en":"art","zh":"艺术","py":"yìshù","th":"ศิลปะ"},{"en":"aunt","zh":"阿姨","py":"āyí","th":"ป้า/น้า"},{"en":"baby","zh":"婴儿","py":"yīng'ér","th":"ทารก"},{"en":"back","zh":"后面","py":"hòumiàn","th":"ด้านหลัง"},{"en":"ball","zh":"球","py":"qiú","th":"ลูกบอล"},{"en":"basic","zh":"基本","py":"jīběn","th":"พื้นฐาน"},{"en":"basket","zh":"篮子","py":"lánzi","th":"ตะกร้า"},{"en":"beach","zh":"海滩","py":"hǎitān","th":"ชายหาด"},{"en":"beautiful","zh":"漂亮","py":"piàoliang","th":"สวย"},{"en":"because","zh":"因为","py":"yīnwèi","th":"เพราะว่า"},{"en":"before","zh":"以前","py":"yǐqián","th":"ก่อน"},{"en":"begin","zh":"开始","py":"kāishǐ","th":"เริ่ม"},{"en":"behind","zh":"后面","py":"hòumiàn","th":"ข้างหลัง"},{"en":"believe","zh":"相信","py":"xiāngxìn","th":"เชื่อ"},{"en":"below","zh":"下面","py":"xiàmiàn","th":"ด้านล่าง"},{"en":"best","zh":"最好","py":"zuì hǎo","th":"ดีที่สุด"},{"en":"better","zh":"更好","py":"gèng hǎo","th":"ดีกว่า"},{"en":"between","zh":"之间","py":"zhījiān","th":"ระหว่าง"},{"en":"bike","zh":"词语","py":"cíyǔ","th":"bike"},{"en":"birthday","zh":"生日","py":"shēngrì","th":"วันเกิด"},{"en":"body","zh":"身体","py":"shēntǐ","th":"ร่างกาย"},{"en":"bottle","zh":"瓶子","py":"píngzi","th":"ขวด"},{"en":"box","zh":"盒子","py":"hézi","th":"กล่อง"},{"en":"boy","zh":"男孩","py":"nánhái","th":"เด็กผู้ชาย"},{"en":"break","zh":"休息","py":"xiūxi","th":"พัก"},{"en":"breakfast","zh":"早餐","py":"zǎocān","th":"อาหารเช้า"},{"en":"bring","zh":"带来","py":"dài lái","th":"นำมา"},{"en":"brother","zh":"词语","py":"cíyǔ","th":"brother"},{"en":"build","zh":"建造","py":"jiànzào","th":"สร้าง"},{"en":"building","zh":"建筑","py":"jiànzhù","th":"อาคาร"},{"en":"busy","zh":"忙","py":"máng","th":"ยุ่ง"},{"en":"cake","zh":"蛋糕","py":"dàngāo","th":"เค้ก"},{"en":"call","zh":"打电话","py":"dǎ diànhuà","th":"โทร"},{"en":"care","zh":"关心","py":"guānxīn","th":"ดูแล"},{"en":"center","zh":"中心","py":"zhōngxīn","th":"ศูนย์กลาง"},{"en":"chance","zh":"机会","py":"jīhuì","th":"โอกาส"},{"en":"check","zh":"检查","py":"jiǎnchá","th":"ตรวจสอบ"},{"en":"child","zh":"孩子","py":"háizi","th":"เด็ก"},{"en":"clean","zh":"干净","py":"gānjìng","th":"สะอาด"},{"en":"clear","zh":"清楚","py":"qīngchu","th":"ชัดเจน"},{"en":"clothes","zh":"衣服","py":"yīfu","th":"เสื้อผ้า"},{"en":"cloud","zh":"云","py":"yún","th":"เมฆ"},{"en":"club","zh":"俱乐部","py":"jùlèbù","th":"ชมรม"},{"en":"color","zh":"词语","py":"cíyǔ","th":"color"},{"en":"company","zh":"公司","py":"gōngsī","th":"บริษัท"},{"en":"cook","zh":"做饭","py":"zuò fàn","th":"ทำอาหาร"},{"en":"cool","zh":"凉快","py":"liángkuai","th":"เย็นสบาย"},{"en":"copy","zh":"复制","py":"fùzhì","th":"คัดลอก"},{"en":"correct","zh":"正确","py":"zhèngquè","th":"ถูกต้อง"},{"en":"cost","zh":"费用","py":"fèiyòng","th":"ค่าใช้จ่าย"},{"en":"count","zh":"数","py":"shǔ","th":"นับ"},{"en":"course","zh":"课程","py":"kèchéng","th":"หลักสูตร"},{"en":"cousin","zh":"表亲","py":"biǎoqīn","th":"ลูกพี่ลูกน้อง"},{"en":"create","zh":"创造","py":"chuàngzào","th":"สร้างสรรค์"},{"en":"cry","zh":"哭","py":"kū","th":"ร้องไห้"},{"en":"culture","zh":"文化","py":"wénhuà","th":"วัฒนธรรม"},{"en":"cut","zh":"切","py":"qiē","th":"ตัด"},{"en":"dance","zh":"跳舞","py":"tiàowǔ","th":"เต้นรำ"},{"en":"danger","zh":"危险","py":"wēixiǎn","th":"อันตราย"},{"en":"dark","zh":"黑暗","py":"hēi'àn","th":"มืด"},{"en":"date","zh":"日期","py":"rìqī","th":"วันที่"},{"en":"daughter","zh":"女儿","py":"nǚ'ér","th":"ลูกสาว"},{"en":"deep","zh":"深","py":"shēn","th":"ลึก"},{"en":"delicious","zh":"好吃","py":"hǎochī","th":"อร่อย"},{"en":"doctor","zh":"医生","py":"yīshēng","th":"หมอ"},{"en":"dream","zh":"梦想","py":"mèngxiǎng","th":"ความฝัน"},{"en":"dress","zh":"裙子","py":"qúnzi","th":"ชุดกระโปรง"},{"en":"drive","zh":"开车","py":"kāichē","th":"ขับรถ"},{"en":"driver","zh":"司机","py":"sījī","th":"คนขับ"},{"en":"dry","zh":"干","py":"gān","th":"แห้ง"},{"en":"early","zh":"早","py":"zǎo","th":"เช้า/เร็ว"},{"en":"earth","zh":"地球","py":"dìqiú","th":"โลก"},{"en":"east","zh":"东","py":"dōng","th":"ทิศตะวันออก"},{"en":"education","zh":"教育","py":"jiàoyù","th":"การศึกษา"},{"en":"email","zh":"电子邮件","py":"diànzǐ yóujiàn","th":"อีเมล"},{"en":"end","zh":"结束","py":"jiéshù","th":"จบ"},{"en":"energy","zh":"能量","py":"néngliàng","th":"พลังงาน"},{"en":"enjoy","zh":"享受","py":"xiǎngshòu","th":"เพลิดเพลิน"},{"en":"enough","zh":"足够","py":"zúgòu","th":"เพียงพอ"},{"en":"evening","zh":"晚上","py":"wǎnshang","th":"ตอนเย็น"},{"en":"everybody","zh":"词语","py":"cíyǔ","th":"everybody"},{"en":"everything","zh":"词语","py":"cíyǔ","th":"everything"},{"en":"example","zh":"例子","py":"lìzi","th":"ตัวอย่าง"},{"en":"exercise","zh":"运动","py":"yùndòng","th":"ออกกำลังกาย"},{"en":"eye","zh":"眼睛","py":"yǎnjing","th":"ตา"},{"en":"face","zh":"脸","py":"liǎn","th":"ใบหน้า"},{"en":"factory","zh":"工厂","py":"gōngchǎng","th":"โรงงาน"},{"en":"fall","zh":"落下","py":"luòxià","th":"ตก"},{"en":"famous","zh":"有名","py":"yǒumíng","th":"มีชื่อเสียง"},{"en":"far","zh":"远","py":"yuǎn","th":"ไกล"},{"en":"farm","zh":"农场","py":"nóngchǎng","th":"ฟาร์ม"},{"en":"favorite","zh":"最喜欢","py":"zuì xǐhuān","th":"ชอบที่สุด"},{"en":"feel","zh":"感觉","py":"gǎnjué","th":"รู้สึก"},{"en":"field","zh":"田野","py":"tiányě","th":"ทุ่ง"},{"en":"fight","zh":"打架","py":"dǎjià","th":"ต่อสู้"},{"en":"find","zh":"找到","py":"zhǎodào","th":"หาเจอ"},{"en":"finger","zh":"手指","py":"shǒuzhǐ","th":"นิ้วมือ"},{"en":"fire","zh":"火","py":"huǒ","th":"ไฟ"},{"en":"flower","zh":"花","py":"huā","th":"ดอกไม้"},{"en":"food","zh":"词语","py":"cíyǔ","th":"food"},{"en":"foot","zh":"脚","py":"jiǎo","th":"เท้า"},{"en":"forest","zh":"森林","py":"sēnlín","th":"ป่า"},{"en":"free","zh":"免费","py":"miǎnfèi","th":"ฟรี"},{"en":"fresh","zh":"新鲜","py":"xīnxiān","th":"สด"},{"en":"front","zh":"前面","py":"qiánmiàn","th":"ด้านหน้า"},{"en":"full","zh":"满","py":"mǎn","th":"เต็ม"},{"en":"fun","zh":"有趣","py":"yǒuqù","th":"สนุก"},{"en":"future","zh":"未来","py":"wèilái","th":"อนาคต"},{"en":"garden","zh":"花园","py":"huāyuán","th":"สวน"},{"en":"girl","zh":"女孩","py":"nǚhái","th":"เด็กผู้หญิง"},{"en":"give","zh":"给","py":"gěi","th":"ให้"},{"en":"glass","zh":"玻璃杯","py":"bōlibēi","th":"แก้ว"},{"en":"great","zh":"很棒","py":"hěn bàng","th":"ยอดเยี่ยม"},{"en":"group","zh":"小组","py":"xiǎozǔ","th":"กลุ่ม"},{"en":"grow","zh":"成长","py":"chéngzhǎng","th":"เติบโต"},{"en":"guest","zh":"客人","py":"kèrén","th":"แขก"},{"en":"guide","zh":"导游","py":"dǎoyóu","th":"ไกด์"},{"en":"hair","zh":"头发","py":"tóufa","th":"ผม"},{"en":"hand","zh":"手","py":"shǒu","th":"มือ"},{"en":"happen","zh":"发生","py":"fāshēng","th":"เกิดขึ้น"},{"en":"hard","zh":"困难","py":"kùnnan","th":"ยาก"},{"en":"hat","zh":"帽子","py":"màozi","th":"หมวก"},{"en":"head","zh":"头","py":"tóu","th":"หัว"},{"en":"health","zh":"健康","py":"jiànkāng","th":"สุขภาพ"},{"en":"hear","zh":"听见","py":"tīngjiàn","th":"ได้ยิน"},{"en":"heart","zh":"心","py":"xīn","th":"หัวใจ"},{"en":"heavy","zh":"重","py":"zhòng","th":"หนัก"},{"en":"high","zh":"高","py":"gāo","th":"สูง"},{"en":"history","zh":"历史","py":"lìshǐ","th":"ประวัติศาสตร์"},{"en":"holiday","zh":"假期","py":"jiàqī","th":"วันหยุด"},{"en":"hope","zh":"希望","py":"xīwàng","th":"หวัง"},{"en":"hour","zh":"小时","py":"xiǎoshí","th":"ชั่วโมง"},{"en":"idea","zh":"想法","py":"xiǎngfǎ","th":"ไอเดีย"},{"en":"important","zh":"重要","py":"zhòngyào","th":"สำคัญ"},{"en":"inside","zh":"里面","py":"lǐmiàn","th":"ข้างใน"},{"en":"interest","zh":"兴趣","py":"xìngqù","th":"ความสนใจ"},{"en":"invite","zh":"邀请","py":"yāoqǐng","th":"เชิญ"},{"en":"island","zh":"岛","py":"dǎo","th":"เกาะ"},{"en":"jacket","zh":"夹克","py":"jiákè","th":"แจ็กเก็ต"},{"en":"join","zh":"参加","py":"cānjiā","th":"เข้าร่วม"},{"en":"juice","zh":"果汁","py":"guǒzhī","th":"น้ำผลไม้"},{"en":"jump","zh":"跳","py":"tiào","th":"กระโดด"},{"en":"keep","zh":"保持","py":"bǎochí","th":"เก็บ/รักษา"},{"en":"key","zh":"钥匙","py":"yàoshi","th":"กุญแจ"},{"en":"kind","zh":"友好","py":"yǒuhǎo","th":"ใจดี"},{"en":"king","zh":"国王","py":"guówáng","th":"กษัตริย์"},{"en":"lake","zh":"湖","py":"hú","th":"ทะเลสาบ"},{"en":"language","zh":"语言","py":"yǔyán","th":"ภาษา"},{"en":"late","zh":"晚","py":"wǎn","th":"สาย"},{"en":"laugh","zh":"笑","py":"xiào","th":"หัวเราะ"},{"en":"left","zh":"左边","py":"zuǒbiān","th":"ซ้าย"},{"en":"letter","zh":"信","py":"xìn","th":"จดหมาย"},{"en":"life","zh":"生活","py":"shēnghuó","th":"ชีวิต"},{"en":"light","zh":"光","py":"guāng","th":"แสง"},{"en":"line","zh":"线","py":"xiàn","th":"เส้น"},{"en":"list","zh":"清单","py":"qīngdān","th":"รายการ"},{"en":"little","zh":"小","py":"xiǎo","th":"เล็กน้อย"},{"en":"live","zh":"住","py":"zhù","th":"อาศัย"},{"en":"low","zh":"低","py":"dī","th":"ต่ำ"},{"en":"lunch","zh":"午餐","py":"wǔcān","th":"อาหารกลางวัน"},{"en":"machine","zh":"机器","py":"jīqì","th":"เครื่องจักร"},{"en":"map","zh":"地图","py":"dìtú","th":"แผนที่"},{"en":"meal","zh":"一餐","py":"yì cān","th":"มื้ออาหาร"},{"en":"meaning","zh":"意思","py":"yìsi","th":"ความหมาย"},{"en":"medicine","zh":"药","py":"yào","th":"ยา"},{"en":"meet","zh":"见面","py":"jiànmiàn","th":"พบ"},{"en":"member","zh":"成员","py":"chéngyuán","th":"สมาชิก"},{"en":"message","zh":"信息","py":"xìnxī","th":"ข้อความ"},{"en":"middle","zh":"中间","py":"zhōngjiān","th":"ตรงกลาง"},{"en":"minute","zh":"分钟","py":"fēnzhōng","th":"นาที"},{"en":"mistake","zh":"错误","py":"cuòwù","th":"ข้อผิดพลาด"},{"en":"modern","zh":"现代","py":"xiàndài","th":"ทันสมัย"},{"en":"mountain","zh":"山","py":"shān","th":"ภูเขา"},{"en":"mouth","zh":"嘴","py":"zuǐ","th":"ปาก"},{"en":"name","zh":"名字","py":"míngzi","th":"ชื่อ"},{"en":"near","zh":"近","py":"jìn","th":"ใกล้"},{"en":"never","zh":"从不","py":"cóng bù","th":"ไม่เคย"},{"en":"news","zh":"新闻","py":"xīnwén","th":"ข่าว"},{"en":"nice","zh":"好","py":"hǎo","th":"ดี/น่ารัก"},{"en":"north","zh":"北","py":"běi","th":"ทิศเหนือ"},{"en":"number","zh":"数字","py":"shùzì","th":"ตัวเลข"},{"en":"often","zh":"经常","py":"jīngcháng","th":"บ่อย ๆ"},{"en":"outside","zh":"外面","py":"wàimiàn","th":"ข้างนอก"},{"en":"page","zh":"页","py":"yè","th":"หน้า"},{"en":"parent","zh":"父母","py":"fùmǔ","th":"ผู้ปกครอง"},{"en":"park","zh":"公园","py":"gōngyuán","th":"สวนสาธารณะ"},{"en":"party","zh":"聚会","py":"jùhuì","th":"งานเลี้ยง"},{"en":"people","zh":"人们","py":"rénmen","th":"ผู้คน"},{"en":"person","zh":"人","py":"rén","th":"คน"},{"en":"place","zh":"地方","py":"dìfang","th":"สถานที่"},{"en":"plant","zh":"植物","py":"zhíwù","th":"พืช"},{"en":"play","zh":"玩","py":"wán","th":"เล่น"},{"en":"pocket","zh":"口袋","py":"kǒudài","th":"กระเป๋าเสื้อ"},{"en":"police","zh":"警察","py":"jǐngchá","th":"ตำรวจ"},{"en":"poor","zh":"贫穷","py":"pínqióng","th":"ยากจน"},{"en":"popular","zh":"受欢迎","py":"shòu huānyíng","th":"เป็นที่นิยม"},{"en":"possible","zh":"可能","py":"kěnéng","th":"เป็นไปได้"},{"en":"present","zh":"礼物","py":"lǐwù","th":"ของขวัญ"},{"en":"problem","zh":"问题","py":"wèntí","th":"ปัญหา"},{"en":"program","zh":"程序","py":"chéngxù","th":"โปรแกรม"},{"en":"queen","zh":"女王","py":"nǚwáng","th":"ราชินี"},{"en":"quick","zh":"快","py":"kuài","th":"เร็ว"},{"en":"quiet","zh":"安静","py":"ānjìng","th":"เงียบ"},{"en":"rainy","zh":"下雨的","py":"xiàyǔ de","th":"ฝนตก"},{"en":"ready","zh":"准备好","py":"zhǔnbèi hǎo","th":"พร้อม"},{"en":"reason","zh":"原因","py":"yuányīn","th":"เหตุผล"},{"en":"report","zh":"报告","py":"bàogào","th":"รายงาน"},{"en":"rest","zh":"休息","py":"xiūxi","th":"พักผ่อน"},{"en":"rich","zh":"富有","py":"fùyǒu","th":"ร่ำรวย"},{"en":"right","zh":"右边","py":"yòubiān","th":"ขวา"},{"en":"river","zh":"河","py":"hé","th":"แม่น้ำ"},{"en":"round","zh":"圆","py":"yuán","th":"กลม"},{"en":"safe","zh":"安全","py":"ānquán","th":"ปลอดภัย"},{"en":"same","zh":"相同","py":"xiāngtóng","th":"เหมือนกัน"},{"en":"save","zh":"保存","py":"bǎocún","th":"บันทึก"},{"en":"sea","zh":"海","py":"hǎi","th":"ทะเล"},{"en":"season","zh":"季节","py":"jìjié","th":"ฤดูกาล"},{"en":"second","zh":"秒","py":"miǎo","th":"วินาที"},{"en":"secret","zh":"秘密","py":"mìmì","th":"ความลับ"},{"en":"send","zh":"发送","py":"fāsòng","th":"ส่ง"},{"en":"sentence","zh":"句子","py":"jùzi","th":"ประโยค"},{"en":"service","zh":"服务","py":"fúwù","th":"บริการ"},{"en":"shape","zh":"形状","py":"xíngzhuàng","th":"รูปร่าง"},{"en":"share","zh":"分享","py":"fēnxiǎng","th":"แบ่งปัน"},{"en":"ship","zh":"船","py":"chuán","th":"เรือ"},{"en":"shirt","zh":"衬衫","py":"chènshān","th":"เสื้อเชิ้ต"},{"en":"shoe","zh":"鞋","py":"xié","th":"รองเท้า"},{"en":"simple","zh":"简单","py":"jiǎndān","th":"ง่าย"},{"en":"sing","zh":"唱歌","py":"chànggē","th":"ร้องเพลง"},{"en":"sister","zh":"词语","py":"cíyǔ","th":"sister"},{"en":"skill","zh":"技能","py":"jìnéng","th":"ทักษะ"},{"en":"sky","zh":"天空","py":"tiānkōng","th":"ท้องฟ้า"},{"en":"smart","zh":"聪明","py":"cōngmíng","th":"ฉลาด"},{"en":"smile","zh":"微笑","py":"wēixiào","th":"ยิ้ม"},{"en":"snow","zh":"雪","py":"xuě","th":"หิมะ"},{"en":"soccer","zh":"足球","py":"zúqiú","th":"ฟุตบอล"},{"en":"soft","zh":"柔软","py":"róuruǎn","th":"นุ่ม"},{"en":"song","zh":"歌曲","py":"gēqǔ","th":"เพลง"},{"en":"sound","zh":"声音","py":"shēngyīn","th":"เสียง"},{"en":"south","zh":"南","py":"nán","th":"ทิศใต้"},{"en":"space","zh":"空间","py":"kōngjiān","th":"พื้นที่/อวกาศ"},{"en":"special","zh":"特别","py":"tèbié","th":"พิเศษ"},{"en":"sport","zh":"运动","py":"yùndòng","th":"กีฬา"},{"en":"spring","zh":"春天","py":"chūntiān","th":"ฤดูใบไม้ผลิ"},{"en":"stand","zh":"站","py":"zhàn","th":"ยืน"},{"en":"story","zh":"故事","py":"gùshi","th":"เรื่องราว"},{"en":"street","zh":"街道","py":"jiēdào","th":"ถนน"},{"en":"strong","zh":"强壮","py":"qiángzhuàng","th":"แข็งแรง"},{"en":"summer","zh":"夏天","py":"xiàtiān","th":"ฤดูร้อน"},{"en":"table","zh":"桌子","py":"zhuōzi","th":"โต๊ะ"},{"en":"take","zh":"拿","py":"ná","th":"หยิบ/เอา"},{"en":"talk","zh":"谈话","py":"tánhuà","th":"คุย"},{"en":"team","zh":"团队","py":"tuánduì","th":"ทีม"},{"en":"test","zh":"测试","py":"cèshì","th":"ทดสอบ"},{"en":"thing","zh":"东西","py":"dōngxi","th":"สิ่งของ"},{"en":"ticket","zh":"票","py":"piào","th":"ตั๋ว"},{"en":"together","zh":"一起","py":"yìqǐ","th":"ด้วยกัน"},{"en":"town","zh":"镇","py":"zhèn","th":"เมืองเล็ก"},{"en":"travel","zh":"旅行","py":"lǚxíng","th":"เดินทาง"},{"en":"tree","zh":"树","py":"shù","th":"ต้นไม้"},{"en":"trip","zh":"旅行","py":"lǚxíng","th":"ทริป"},{"en":"true","zh":"真的","py":"zhēn de","th":"จริง"},{"en":"uncle","zh":"叔叔","py":"shūshu","th":"ลุง/อา"},{"en":"use","zh":"使用","py":"shǐyòng","th":"ใช้"},{"en":"village","zh":"村庄","py":"cūnzhuāng","th":"หมู่บ้าน"},{"en":"visit","zh":"参观","py":"cānguān","th":"เยี่ยมชม"},{"en":"voice","zh":"声音","py":"shēngyīn","th":"เสียง"},{"en":"wait","zh":"等","py":"děng","th":"รอ"},{"en":"wall","zh":"墙","py":"qiáng","th":"กำแพง"},{"en":"warm","zh":"暖和","py":"nuǎnhuo","th":"อบอุ่น"},{"en":"wash","zh":"洗","py":"xǐ","th":"ล้าง"},{"en":"watch","zh":"手表","py":"shǒubiǎo","th":"นาฬิกาข้อมือ"},{"en":"way","zh":"方法","py":"fāngfǎ","th":"วิธี"},{"en":"weather","zh":"天气","py":"tiānqì","th":"อากาศ"},{"en":"west","zh":"西","py":"xī","th":"ทิศตะวันตก"},{"en":"wife","zh":"妻子","py":"qīzi","th":"ภรรยา"},{"en":"winter","zh":"冬天","py":"dōngtiān","th":"ฤดูหนาว"},{"en":"woman","zh":"女人","py":"nǚrén","th":"ผู้หญิง"},{"en":"word","zh":"单词","py":"dāncí","th":"คำศัพท์"},{"en":"world","zh":"世界","py":"shìjiè","th":"โลก"},{"en":"young","zh":"年轻","py":"niánqīng","th":"อายุน้อย"},{"en":"zero","zh":"零","py":"líng","th":"ศูนย์"},{"en":"number 21","zh":"二十一","py":"21","th":"21"},{"en":"number 22","zh":"二十二","py":"22","th":"22"},{"en":"number 23","zh":"二十三","py":"23","th":"23"},{"en":"number 24","zh":"二十四","py":"24","th":"24"},{"en":"number 25","zh":"二十五","py":"25","th":"25"},{"en":"number 26","zh":"二十六","py":"26","th":"26"},{"en":"number 27","zh":"二十七","py":"27","th":"27"},{"en":"number 28","zh":"二十八","py":"28","th":"28"},{"en":"number 29","zh":"二十九","py":"29","th":"29"},{"en":"number 30","zh":"三十","py":"30","th":"30"},{"en":"number 31","zh":"三十一","py":"31","th":"31"},{"en":"number 32","zh":"三十二","py":"32","th":"32"},{"en":"number 33","zh":"三十三","py":"33","th":"33"},{"en":"number 34","zh":"三十四","py":"34","th":"34"},{"en":"number 35","zh":"三十五","py":"35","th":"35"},{"en":"number 36","zh":"三十六","py":"36","th":"36"},{"en":"number 37","zh":"三十七","py":"37","th":"37"},{"en":"number 38","zh":"三十八","py":"38","th":"38"},{"en":"number 39","zh":"三十九","py":"39","th":"39"},{"en":"number 40","zh":"四十","py":"40","th":"40"},{"en":"number 41","zh":"四十一","py":"41","th":"41"},{"en":"number 42","zh":"四十二","py":"42","th":"42"},{"en":"number 43","zh":"四十三","py":"43","th":"43"},{"en":"number 44","zh":"四十四","py":"44","th":"44"},{"en":"number 45","zh":"四十五","py":"45","th":"45"},{"en":"number 46","zh":"四十六","py":"46","th":"46"},{"en":"number 47","zh":"四十七","py":"47","th":"47"},{"en":"number 48","zh":"四十八","py":"48","th":"48"},{"en":"number 49","zh":"四十九","py":"49","th":"49"},{"en":"number 50","zh":"五十","py":"50","th":"50"},{"en":"number 51","zh":"五十一","py":"51","th":"51"},{"en":"number 52","zh":"五十二","py":"52","th":"52"},{"en":"number 53","zh":"五十三","py":"53","th":"53"},{"en":"number 54","zh":"五十四","py":"54","th":"54"},{"en":"number 55","zh":"五十五","py":"55","th":"55"},{"en":"number 56","zh":"五十六","py":"56","th":"56"},{"en":"number 57","zh":"五十七","py":"57","th":"57"},{"en":"number 58","zh":"五十八","py":"58","th":"58"},{"en":"number 59","zh":"五十九","py":"59","th":"59"},{"en":"number 60","zh":"六十","py":"60","th":"60"},{"en":"number 61","zh":"六十一","py":"61","th":"61"},{"en":"number 62","zh":"六十二","py":"62","th":"62"},{"en":"number 63","zh":"六十三","py":"63","th":"63"},{"en":"number 64","zh":"六十四","py":"64","th":"64"},{"en":"number 65","zh":"六十五","py":"65","th":"65"},{"en":"number 66","zh":"六十六","py":"66","th":"66"},{"en":"number 67","zh":"六十七","py":"67","th":"67"},{"en":"number 68","zh":"六十八","py":"68","th":"68"},{"en":"number 69","zh":"六十九","py":"69","th":"69"},{"en":"number 70","zh":"七十","py":"70","th":"70"},{"en":"number 71","zh":"七十一","py":"71","th":"71"},{"en":"number 72","zh":"七十二","py":"72","th":"72"},{"en":"number 73","zh":"七十三","py":"73","th":"73"},{"en":"number 74","zh":"七十四","py":"74","th":"74"},{"en":"number 75","zh":"七十五","py":"75","th":"75"},{"en":"number 76","zh":"七十六","py":"76","th":"76"},{"en":"number 77","zh":"七十七","py":"77","th":"77"},{"en":"number 78","zh":"七十八","py":"78","th":"78"},{"en":"number 79","zh":"七十九","py":"79","th":"79"},{"en":"number 80","zh":"八十","py":"80","th":"80"},{"en":"number 81","zh":"八十一","py":"81","th":"81"},{"en":"number 82","zh":"八十二","py":"82","th":"82"},{"en":"number 83","zh":"八十三","py":"83","th":"83"},{"en":"number 84","zh":"八十四","py":"84","th":"84"},{"en":"number 85","zh":"八十五","py":"85","th":"85"},{"en":"number 86","zh":"八十六","py":"86","th":"86"},{"en":"number 87","zh":"八十七","py":"87","th":"87"},{"en":"number 88","zh":"八十八","py":"88","th":"88"},{"en":"number 89","zh":"八十九","py":"89","th":"89"},{"en":"number 90","zh":"九十","py":"90","th":"90"},{"en":"number 91","zh":"九十一","py":"91","th":"91"},{"en":"number 92","zh":"九十二","py":"92","th":"92"},{"en":"number 93","zh":"九十三","py":"93","th":"93"},{"en":"number 94","zh":"九十四","py":"94","th":"94"},{"en":"number 95","zh":"九十五","py":"95","th":"95"},{"en":"number 96","zh":"九十六","py":"96","th":"96"},{"en":"number 97","zh":"九十七","py":"97","th":"97"},{"en":"number 98","zh":"九十八","py":"98","th":"98"},{"en":"number 99","zh":"九十九","py":"99","th":"99"},{"en":"hello","zh":"你好","py":"nǐ hǎo","th":"สวัสดี"},{"en":"thank you","zh":"谢谢","py":"xièxie","th":"ขอบคุณ"},{"en":"sorry","zh":"对不起","py":"duìbuqǐ","th":"ขอโทษ"},{"en":"goodbye","zh":"再见","py":"zàijiàn","th":"ลาก่อน"},{"en":"yes","zh":"是","py":"shì","th":"ใช่"},{"en":"no","zh":"不是","py":"bú shì","th":"ไม่ใช่"},{"en":"please","zh":"请","py":"qǐng","th":"กรุณา"},{"en":"excuse me","zh":"不好意思","py":"bù hǎoyìsi","th":"ขอโทษ/ขอทาง"},{"en":"how much","zh":"多少钱","py":"duōshǎo qián","th":"ราคาเท่าไหร่"},{"en":"where","zh":"哪里","py":"nǎlǐ","th":"ที่ไหน"},{"en":"who","zh":"谁","py":"shéi","th":"ใคร"},{"en":"what","zh":"什么","py":"shénme","th":"อะไร"},{"en":"when","zh":"什么时候","py":"shénme shíhou","th":"เมื่อไหร่"},{"en":"why","zh":"为什么","py":"wèishénme","th":"ทำไม"},{"en":"how","zh":"怎么","py":"zěnme","th":"อย่างไร"},{"en":"I","zh":"我","py":"wǒ","th":"ฉัน"},{"en":"you","zh":"你","py":"nǐ","th":"คุณ"},{"en":"he","zh":"他","py":"tā","th":"เขาผู้ชาย"},{"en":"she","zh":"她","py":"tā","th":"เขาผู้หญิง"},{"en":"we","zh":"我们","py":"wǒmen","th":"พวกเรา"},{"en":"they","zh":"他们","py":"tāmen","th":"พวกเขา"},{"en":"this","zh":"这个","py":"zhège","th":"สิ่งนี้"},{"en":"that","zh":"那个","py":"nàge","th":"สิ่งนั้น"},{"en":"here","zh":"这里","py":"zhèlǐ","th":"ที่นี่"},{"en":"there","zh":"那里","py":"nàlǐ","th":"ที่นั่น"},{"en":"not","zh":"不","py":"bù","th":"ไม่"},{"en":"very","zh":"很","py":"hěn","th":"มาก"},{"en":"too","zh":"太","py":"tài","th":"เกินไป"},{"en":"can","zh":"可以","py":"kěyǐ","th":"สามารถ/ได้"},{"en":"cannot","zh":"不可以","py":"bù kěyǐ","th":"ไม่ได้"},{"en":"morning greeting","zh":"早上好","py":"zǎoshang hǎo","th":"อรุณสวัสดิ์"},{"en":"good night","zh":"晚安","py":"wǎn'ān","th":"ราตรีสวัสดิ์"},{"en":"my name is","zh":"我叫","py":"wǒ jiào","th":"ฉันชื่อ"},{"en":"I like","zh":"我喜欢","py":"wǒ xǐhuān","th":"ฉันชอบ"},{"en":"I want","zh":"我要","py":"wǒ yào","th":"ฉันต้องการ"},{"en":"I know","zh":"我知道","py":"wǒ zhīdào","th":"ฉันรู้"},{"en":"I don't know","zh":"我不知道","py":"wǒ bù zhīdào","th":"ฉันไม่รู้"},{"en":"no problem","zh":"没问题","py":"méi wèntí","th":"ไม่มีปัญหา"},{"en":"very good","zh":"很好","py":"hěn hǎo","th":"ดีมาก"},{"en":"not bad","zh":"不错","py":"bú cuò","th":"ไม่เลว"},{"en":"come on","zh":"加油","py":"jiāyóu","th":"สู้ ๆ"},{"en":"welcome","zh":"欢迎","py":"huānyíng","th":"ยินดีต้อนรับ"},{"en":"Chinese language","zh":"中文","py":"zhōngwén","th":"ภาษาจีน"},{"en":"English language","zh":"英文","py":"yīngwén","th":"ภาษาอังกฤษ"},{"en":"Thai language","zh":"泰文","py":"tàiwén","th":"ภาษาไทย"},{"en":"speak Chinese","zh":"说中文","py":"shuō zhōngwén","th":"พูดภาษาจีน"}];
+let lang="en", roundWords=[], index=0, current=null;
+let score=0, wrong=0, attempts=0, combo=0, timeLeft=60, timer=null, locked=false, history=[];
+const bestKey="marnWordRushBestMobile";
+
+function el(id){return document.getElementById(id)}
+function show(id){
+  ["home","game","result"].forEach(function(x){el(x).classList.add("hidden")});
+  el(id).classList.remove("hidden");
+  el("bestScore").textContent = localStorage.getItem(bestKey) || 0;
+}
+function setLang(value){
+  lang=value;
+  el("btnEn").className = value==="en" ? "primary" : "";
+  el("btnZh").className = value==="zh" ? "primary" : "";
+}
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function startGame(){
+  const name=el("player").value.trim();
+  if(!name){ alert("กรุณากรอกชื่อผู้เล่นก่อนเริ่มเกม"); el("player").focus(); return; }
+  roundWords=shuffle(VOCAB); index=0; score=0; wrong=0; attempts=0; combo=0; timeLeft=60; history=[];
+  el("time").textContent=60; el("score").textContent=0; el("combo").textContent=0; el("timeBar").style.width="100%"; el("percentText").textContent="100%";
+  show("game");
+  nextQuestion();
+  clearInterval(timer);
+  timer=setInterval(function(){
+    timeLeft--;
+    el("time").textContent=timeLeft;
+    const pct=Math.max(0,Math.round((timeLeft/60)*100));
+    el("timeBar").style.width=pct+"%"; el("percentText").textContent=pct+"%";
+    if(timeLeft<=0) finishGame();
+  },1000);
+}
+function nextQuestion(){
+  if(index>=roundWords.length){ roundWords=shuffle(VOCAB); index=0; }
+  current=roundWords[index++]; locked=false;
+  const askToThai=el("direction").value==="toThai";
+  el("modeLine").textContent = askToThai ? "เลือกความหมายภาษาไทยที่ถูกต้อง" : (lang==="en" ? "เลือกคำศัพท์ภาษาอังกฤษที่ถูกต้อง" : "เลือกคำศัพท์ภาษาจีนที่ถูกต้อง");
+  el("questionWord").textContent = askToThai ? (lang==="en" ? current.en : current.zh) : current.th;
+  el("pinyin").textContent = (lang==="zh" && askToThai) ? current.py : "";
+  const correct=askToThai ? current.th : (lang==="en" ? current.en : current.zh);
+  let choices=[correct];
+  while(choices.length<4){
+    const v=VOCAB[Math.floor(Math.random()*VOCAB.length)];
+    const c=askToThai ? v.th : (lang==="en" ? v.en : v.zh);
+    if(!choices.includes(c)) choices.push(c);
+  }
+  choices=shuffle(choices);
+  const options=el("options"); options.innerHTML="";
+  choices.forEach(function(c){
+    const btn=document.createElement("button");
+    btn.type="button"; btn.className="option"; btn.textContent=c;
+    btn.addEventListener("click", function(){ answer(btn,c); });
+    options.appendChild(btn);
+  });
+}
+function answer(btn,choice){
+  if(locked) return; locked=true; attempts++;
+  const askToThai=el("direction").value==="toThai";
+  const correct=askToThai ? current.th : (lang==="en" ? current.en : current.zh);
+  const ok=choice===correct;
+  if(ok){ score++; combo++; btn.classList.add("correct"); setTimeout(nextQuestion,160); }
+  else {
+    wrong++; combo=0; btn.classList.add("wrong");
+    document.querySelectorAll(".option").forEach(function(b){if(b.textContent===correct)b.classList.add("correct")});
+    setTimeout(nextQuestion,520);
+  }
+  history.push({en:current.en,zh:current.zh,py:current.py,th:current.th,ok:ok});
+  el("score").textContent=score; el("combo").textContent=combo;
+}
+function speakWord(){
+  if(!current || !window.speechSynthesis) return;
+  const u=new SpeechSynthesisUtterance(lang==="zh" ? current.zh : current.en);
+  u.lang=lang==="zh" ? "zh-CN" : "en-US";
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+function finishGame(){
+  clearInterval(timer); timer=null; show("result");
+  el("finalScore").textContent=score; el("attempts").textContent=attempts; el("wrong").textContent=wrong;
+  const acc=attempts?Math.round((score/attempts)*100):0; el("accuracy").textContent=acc+"%";
+  let msg="เริ่มดีแล้ว ลองอีกรอบเพื่อทำลายสถิติ!";
+  if(score>=15) msg="เร็วมาก! เริ่มเป็นนักล่าคำศัพท์แล้ว";
+  if(score>=25) msg="สุดยอด! ความเร็วและความจำดีมาก";
+  if(score>=35) msg="โหดมาก! ระดับแชมป์ Word Rush";
+  el("resultText").textContent=msg;
+  const best=Number(localStorage.getItem(bestKey)||0);
+  if(score>best){localStorage.setItem(bestKey,score);el("newRecord").classList.remove("hidden")}
+  else el("newRecord").classList.add("hidden");
+  el("review").innerHTML=history.slice(-25).map(function(x){
+    return '<div class="reviewItem"><span class="pill">'+(x.ok?'ถูก':'ผิด')+'</span> <b>'+x.en+'</b> · '+x.zh+' <span class="small">('+x.py+')</span><br><span class="small">ความหมาย: '+x.th+'</span></div>';
+  }).join("") || "<p class='small'>ยังไม่มีข้อมูลคำศัพท์</p>";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  el("btnEn").addEventListener("click", function(){setLang("en")});
+  el("btnZh").addEventListener("click", function(){setLang("zh")});
+  el("startBtn").addEventListener("click", startGame);
+  el("speakBtn").addEventListener("click", speakWord);
+  el("finishBtn").addEventListener("click", finishGame);
+  el("againBtn").addEventListener("click", startGame);
+  el("homeBtn").addEventListener("click", function(){show("home")});
+  setLang("en"); show("home");
+});
+</script>
+</body>
+</html>
